@@ -14,7 +14,3 @@
 # Maven
 log/
 target/
-.factorypath
-src/main/resources/META-INF/persistence.xml
-src/main/resources/META-INF/persistence.xml
-persistence.xml
