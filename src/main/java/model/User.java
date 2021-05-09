@@ -11,7 +11,6 @@ import javax.persistence.MappedSuperclass;
 public class User {
     @Column(unique = true)
     private String username;
-    @Column(unique = true)
     private String password;
 
     private String name;
