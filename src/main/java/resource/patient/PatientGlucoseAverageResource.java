@@ -23,6 +23,7 @@ public class PatientGlucoseAverageResource extends ServerResource {
     public Double getAverageGlucose() throws AuthorizationException {
         ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
         ResourceUtils.checkIfTokenExpired(this);
+        ResourceUtils.checkPerson(this, patientId);
 
         String start = getQueryValue("start");
         String end = getQueryValue("end");

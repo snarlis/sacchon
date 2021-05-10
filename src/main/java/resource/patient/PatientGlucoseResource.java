@@ -72,6 +72,7 @@ public class PatientGlucoseResource extends ServerResource {
 
         EntityManager em = JpaUtil.getEntityManager();
         GlucoseRepository glucoseRepository = new GlucoseRepository(em);
+        ResourceUtils.checkPerson(this, glucoseRepository.read(glucoseId).getPatient().getId());
         glucoseRepository.delete(glucoseRepository.read(glucoseId).getId());
     }
 }

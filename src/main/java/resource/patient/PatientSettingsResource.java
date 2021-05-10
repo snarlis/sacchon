@@ -26,6 +26,7 @@ public class PatientSettingsResource extends ServerResource {
     public PatientRepresentation getPatient() throws AuthorizationException {
         ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
         ResourceUtils.checkIfTokenExpired(this);
+        ResourceUtils.checkPerson(this, id);
 
         EntityManager em = JpaUtil.getEntityManager();
         PatientRepository patientRepository = new PatientRepository(em);

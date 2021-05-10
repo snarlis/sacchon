@@ -29,6 +29,7 @@ public class PatientGlucoseListResource extends ServerResource {
     public List<GlucoseRepresentation> getGlucoseList() throws AuthorizationException {
         ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
         ResourceUtils.checkIfTokenExpired(this);
+        ResourceUtils.checkPerson(this, patientId);
 
         EntityManager em = JpaUtil.getEntityManager();
 

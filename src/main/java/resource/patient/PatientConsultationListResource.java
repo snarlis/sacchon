@@ -28,6 +28,7 @@ public class PatientConsultationListResource extends ServerResource {
     public List<ConsultationRepresentation> getConsultationList() throws AuthorizationException {
         ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
         ResourceUtils.checkIfTokenExpired(this);
+        ResourceUtils.checkPerson(this, patientId);
 
         EntityManager em = JpaUtil.getEntityManager();
 
