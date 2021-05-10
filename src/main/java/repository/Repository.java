@@ -20,10 +20,12 @@ public abstract class Repository<T, K> {
             entityManager.getTransaction().commit();
         } catch (ConstraintViolationException e) {
             System.out.println("Already registered!");
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+        return t;
     }
 
     public abstract Class<T> getEntityClass();
@@ -58,8 +60,8 @@ public abstract class Repository<T, K> {
             return t;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
     //Verify
 
