@@ -1,5 +1,6 @@
 package resource;
 
+import com.google.common.hash.Hashing;
 import exception.AuthorizationException;
 import jpaUtil.JpaUtil;
 import model.ChiefDoctor;
@@ -11,6 +12,7 @@ import representation.ChiefDoctorRepresentation;
 import security.JWT;
 
 import javax.persistence.EntityManager;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,9 @@ public class ChiefDoctorListResource extends ServerResource {
         if (chiefDoctorRepresentationIn.getName() == null) return null;
 
         ChiefDoctor chiefDoctor = chiefDoctorRepresentationIn.createChiefDoctor();
+        chiefDoctor.setPassword(Hashing.sha256() //hash the password before storing
+                .hashString(chiefDoctor.getPassword(), StandardCharsets.UTF_8)
+                .toString());
         EntityManager em = JpaUtil.getEntityManager();
         ChiefDoctorRepository chiefDoctorRepository = new ChiefDoctorRepository(em);
         chiefDoctorRepository.save(chiefDoctor);

@@ -1,5 +1,6 @@
 package resource;
 
+import com.google.common.hash.Hashing;
 import exception.AuthorizationException;
 import jpaUtil.JpaUtil;
 import model.Patient;
@@ -9,6 +10,7 @@ import repository.PatientRepository;
 import representation.PatientRepresentation;
 
 import javax.persistence.EntityManager;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 public class registerResource extends ServerResource {
@@ -23,6 +25,9 @@ public class registerResource extends ServerResource {
 
         Patient patient = patientRepresentationIn.createPatient();
         if (patientRepresentationIn.getDateRegistered() == null) patient.setDateRegistered(new Date());
+        patient.setPassword(Hashing.sha256()
+                .hashString(patient.getPassword(), StandardCharsets.UTF_8)
+                .toString());
         EntityManager em = JpaUtil.getEntityManager();
         PatientRepository patientRepository = new PatientRepository(em);
         patientRepository.save(patient);

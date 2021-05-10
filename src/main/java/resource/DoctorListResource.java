@@ -1,5 +1,6 @@
 package resource;
 
+import com.google.common.hash.Hashing;
 import exception.AuthorizationException;
 import jpaUtil.JpaUtil;
 import model.Doctor;
@@ -11,6 +12,7 @@ import representation.DoctorRepresentation;
 import security.JWT;
 
 import javax.persistence.EntityManager;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,9 @@ public class DoctorListResource extends ServerResource {
         if (doctorRepresentationIn.getPassword() == null) return null;
 
         Doctor doctor = doctorRepresentationIn.createDoctor();
+        doctor.setPassword(Hashing.sha256() //hash the password before storing
+                .hashString(doctor.getPassword(), StandardCharsets.UTF_8)
+                .toString());
         EntityManager em = JpaUtil.getEntityManager();
         DoctorRepository doctorRepository = new DoctorRepository(em);
         doctorRepository.save(doctor);
