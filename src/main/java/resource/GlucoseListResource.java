@@ -8,7 +8,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import repository.GlucoseRepository;
 import representation.GlucoseRepresentation;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -18,7 +18,9 @@ import java.util.List;
 public class GlucoseListResource extends ServerResource {
     @Get("json")
     public List<GlucoseRepresentation> getGlucose() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
         GlucoseRepository glucoseRepository = new GlucoseRepository(em);
         List<Glucose> glucoses = glucoseRepository.findAll();
@@ -33,7 +35,9 @@ public class GlucoseListResource extends ServerResource {
 
     @Post("json")
     public GlucoseRepresentation add(GlucoseRepresentation glucoseRepresentationIn) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         if (glucoseRepresentationIn == null) return null;
 
         Glucose glucose = glucoseRepresentationIn.createGlucose();

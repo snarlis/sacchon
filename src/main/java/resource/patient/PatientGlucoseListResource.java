@@ -11,7 +11,7 @@ import repository.GlucoseRepository;
 import repository.PatientRepository;
 import representation.GlucoseRepresentation;
 import resource.ResourceUtils;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -27,7 +27,9 @@ public class PatientGlucoseListResource extends ServerResource {
 
     @Get("json")
     public List<GlucoseRepresentation> getGlucoseList() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_PATIENT);
+        ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
 
         PatientRepository patientRepository = new PatientRepository(em);
@@ -44,7 +46,10 @@ public class PatientGlucoseListResource extends ServerResource {
 
     @Post("json")
     public GlucoseRepresentation add(GlucoseRepresentation glucoseRepresentationIn) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_PATIENT);
+        ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
+        ResourceUtils.checkIfTokenExpired(this);
+        ResourceUtils.checkPerson(this, patientId);
+
         if (glucoseRepresentationIn == null) return null;
 
         glucoseRepresentationIn.setPatientId(this.patientId);

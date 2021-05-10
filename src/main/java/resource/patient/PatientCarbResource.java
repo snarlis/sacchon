@@ -11,7 +11,7 @@ import repository.CarbRepository;
 import repository.PatientRepository;
 import representation.CarbRepresentation;
 import resource.ResourceUtils;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -28,7 +28,9 @@ public class PatientCarbResource extends ServerResource {
 
     @Get("json")
     public CarbRepresentation getCarb() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_PATIENT);
+        ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
 
         PatientRepository patientRepository = new PatientRepository(em);
@@ -47,7 +49,10 @@ public class PatientCarbResource extends ServerResource {
 
     @Put("json")
     public CarbRepresentation updateCarb(CarbRepresentation carbRepresentation) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_PATIENT);
+        ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
+        ResourceUtils.checkIfTokenExpired(this);
+        ResourceUtils.checkPerson(this, patientId);
+
         if (carbRepresentation == null) return null;
 
         carbRepresentation.setId(carbId);
@@ -63,7 +68,8 @@ public class PatientCarbResource extends ServerResource {
 
     @Delete("json")
     public void deleteCarb() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_PATIENT);
+        ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
+        ResourceUtils.checkIfTokenExpired(this);
         EntityManager em = JpaUtil.getEntityManager();
         CarbRepository carbRepository = new CarbRepository(em);
         carbRepository.delete(carbRepository.read(carbId).getId());

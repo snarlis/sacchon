@@ -8,7 +8,7 @@ import org.restlet.resource.ServerResource;
 import repository.PatientRepository;
 import representation.PatientRepresentation;
 import resource.ResourceUtils;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -21,7 +21,8 @@ public class PatientInactiveListResource extends ServerResource {
 
     @Get("json")
     public List<PatientRepresentation> getInactivePatientList() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
 
         String period = getQueryValue("period");
         Date date1 = ResourceUtils.stringToDate(period, 0);

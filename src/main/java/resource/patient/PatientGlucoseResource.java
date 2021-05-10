@@ -11,7 +11,7 @@ import repository.GlucoseRepository;
 import repository.PatientRepository;
 import representation.GlucoseRepresentation;
 import resource.ResourceUtils;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -28,7 +28,10 @@ public class PatientGlucoseResource extends ServerResource {
 
     @Get("json")
     public GlucoseRepresentation getGlucose() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_PATIENT);
+        ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
+        ResourceUtils.checkIfTokenExpired(this);
+        ResourceUtils.checkPerson(this, patientId);
+
         EntityManager em = JpaUtil.getEntityManager();
         PatientRepository patientRepository = new PatientRepository(em);
         List<Glucose> glucoseList = patientRepository.getGlucoseList(this.patientId);
@@ -45,7 +48,10 @@ public class PatientGlucoseResource extends ServerResource {
 
     @Put("json")
     public GlucoseRepresentation updateGlucose(GlucoseRepresentation glucoseRepresentationIn) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_PATIENT);
+        ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
+        ResourceUtils.checkIfTokenExpired(this);
+        ResourceUtils.checkPerson(this, patientId);
+
         if (glucoseRepresentationIn == null) return null;
 
         EntityManager em = JpaUtil.getEntityManager();
@@ -61,7 +67,9 @@ public class PatientGlucoseResource extends ServerResource {
 
     @Delete("json")
     public void deleteGlucose() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_PATIENT);
+        ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
         GlucoseRepository glucoseRepository = new GlucoseRepository(em);
         glucoseRepository.delete(glucoseRepository.read(glucoseId).getId());

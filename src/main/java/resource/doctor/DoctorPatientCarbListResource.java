@@ -10,7 +10,7 @@ import repository.CarbRepository;
 import repository.PatientRepository;
 import representation.CarbRepresentation;
 import resource.ResourceUtils;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -27,7 +27,9 @@ public class DoctorPatientCarbListResource extends ServerResource {
 
     @Get("json")
     public List<CarbRepresentation> getCarbList() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
 
         PatientRepository patientRepository = new PatientRepository(em);
@@ -44,7 +46,9 @@ public class DoctorPatientCarbListResource extends ServerResource {
 
     @Post("json")
     public CarbRepresentation addCarb(CarbRepresentation carbRepresentationIn) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         if (carbRepresentationIn == null) return null;
 
         carbRepresentationIn.setPatientId(this.patientId);

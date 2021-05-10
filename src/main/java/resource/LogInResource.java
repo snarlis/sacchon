@@ -9,40 +9,40 @@ import org.restlet.resource.ServerResource;
 import repository.ChiefDoctorRepository;
 import repository.DoctorRepository;
 import repository.PatientRepository;
+import security.JWT;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class LogInResource extends ServerResource {
 
 
     @Get
-    public List<Integer> logIn() {
+    public String logIn()  {
         String username = getQueryValue("username");
         String password = getQueryValue("password");
-        List<Integer> result = new ArrayList<>(3);
+        String returnValue = "Invalid credentials";
 
         Patient patient = isPatient(username, password);
         if (patient != null) {
-            result.add(1);
-            result.add((int) patient.getId());
-            result.add(patient.isConsultationChanged() ? 1 : 0);
+            String jwt = JWT.createJWT(String.valueOf(patient.getId()),"sacchon","patient" );
+            returnValue = "{\n\"jwt\":\""+jwt+"\"}"; //could be done via a cleaner way
             resetFlag(patient);
         }
 
         Doctor doctor = isDoctor(username, password);
         if (doctor != null) {
-            result.add(2);
-            result.add((int) doctor.getId());
+            String jwt = JWT.createJWT(String.valueOf(doctor.getId()),"sacchon","doctor" );
+            returnValue = "{\n\"jwt\":\""+jwt+"\"}"; //could be done via a cleaner way
         }
 
         ChiefDoctor chiefDoctor = isChiefDoctor(username, password);
         if (chiefDoctor != null) {
-            result.add(3);
-            result.add((int) chiefDoctor.getId());
+            String jwt = JWT.createJWT(String.valueOf(chiefDoctor.getId()),"sacchon","chiefDoctor" );
+            returnValue = "{\n\"jwt\":\""+jwt+"\"}"; //could be done via a cleaner way
         }
-        return result;
+
+        return returnValue;
     }
 
     public Patient isPatient(String username, String password) {

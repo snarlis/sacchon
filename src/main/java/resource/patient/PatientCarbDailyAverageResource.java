@@ -6,7 +6,7 @@ import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import repository.PatientRepository;
 import resource.ResourceUtils;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.Date;
@@ -22,7 +22,9 @@ public class PatientCarbDailyAverageResource extends ServerResource {
 
     @Get
     public List<Double> getAverageCarb() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_PATIENT);
+        ResourceUtils.checkRole(this, JWT.ROLE_PATIENT);
+        ResourceUtils.checkIfTokenExpired(this);
+
         String start = getQueryValue("start");
         String end = getQueryValue("end");
         Date dateStart = ResourceUtils.stringToDate(start, -1);

@@ -9,7 +9,7 @@ import org.restlet.resource.Put;
 import org.restlet.resource.ServerResource;
 import repository.DoctorRepository;
 import representation.DoctorRepresentation;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 
@@ -23,7 +23,9 @@ public class DoctorResource extends ServerResource {
 
     @Get("json")
     public DoctorRepresentation getDoctor() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
         DoctorRepository doctorRepository = new DoctorRepository(em);
         Doctor doctor = doctorRepository.read(id);
@@ -34,7 +36,9 @@ public class DoctorResource extends ServerResource {
 
     @Put("json")
     public DoctorRepresentation updateDoctor(DoctorRepresentation doctorRepresentation) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
         DoctorRepository doctorRepository = new DoctorRepository(em);
         Doctor doctor = doctorRepresentation.createDoctor();
@@ -46,7 +50,9 @@ public class DoctorResource extends ServerResource {
 
     @Delete("json")
     public void deleteDoctor() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
         DoctorRepository doctorRepository = new DoctorRepository(em);
         doctorRepository.delete(doctorRepository.read(id).getId());

@@ -8,7 +8,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import repository.ConsultationRepository;
 import representation.ConsultationRepresentation;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -18,7 +18,9 @@ import java.util.List;
 public class ConsultationListResource extends ServerResource {
     @Get("json")
     public List<ConsultationRepresentation> getConsultation() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
         ConsultationRepository consultationRepository = new ConsultationRepository(em);
         List<Consultation> consultationList = consultationRepository.findAll();
@@ -33,7 +35,9 @@ public class ConsultationListResource extends ServerResource {
 
     @Post("json")
     public ConsultationRepresentation add(ConsultationRepresentation consultationRepresentationIn) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         if (consultationRepresentationIn == null) return null;
 
         Consultation consultation = consultationRepresentationIn.createConsultation();

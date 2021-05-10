@@ -11,7 +11,7 @@ import repository.ConsultationRepository;
 import repository.PatientRepository;
 import representation.ConsultationRepresentation;
 import resource.ResourceUtils;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -28,7 +28,9 @@ public class DoctorPatientConsultationResource extends ServerResource {
 
     @Get("json")
     public ConsultationRepresentation getConsultation() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
 
         PatientRepository patientRepository = new PatientRepository(em);
@@ -46,7 +48,9 @@ public class DoctorPatientConsultationResource extends ServerResource {
 
     @Put("json")
     public ConsultationRepresentation updateConsultation(ConsultationRepresentation consultationRepresentation) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         if (consultationRepresentation == null) return null;
         EntityManager em = JpaUtil.getEntityManager();
         ConsultationRepository consultationRepository = new ConsultationRepository(em);

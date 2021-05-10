@@ -26,14 +26,6 @@ public class CustomRouter {
         router.attach("/chiefDoctor", ChiefDoctorListResource.class);
         router.attach("/chiefDoctor/{id}", ChiefDoctorResource.class);
 
-
-        return router;
-    }
-
-
-    public Router protectedResources() {
-        Router router = new Router();
-
         //Patient
         router.attach("/patientSettings/{id}", PatientSettingsResource.class);
         router.attach("/patient/{patientId}/carb/{carbId}", PatientCarbResource.class);
@@ -62,7 +54,6 @@ public class CustomRouter {
         router.attach("/doctor/{doctorId}/consultation/", DoctorConsultationListResource.class);// put
         router.attach("/doctor/{doctorId}/consultation/{consultationId}", DoctorConsultationResource.class);
 
-
         //ChiefDoctor
         router.attach("/patient", PatientListResource.class);
         router.attach("/patient/{id}", PatientResource.class);
@@ -83,6 +74,14 @@ public class CustomRouter {
         router.attach("/reportUnconsultedPatientDiff/", ReportUnconsultedPatientDiffListResource.class);
         router.attach("/patientInactive", PatientInactiveListResource.class);
         router.attach("/doctorInactive", DoctorInactiveListResource.class);
+
+        return router;
+    }
+
+
+    public Router protectedResources() {
+        Router router = new Router();
+
 
         return router;
     }

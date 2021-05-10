@@ -8,7 +8,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import repository.CarbRepository;
 import representation.CarbRepresentation;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -18,7 +18,9 @@ import java.util.List;
 public class CarbListResource extends ServerResource {
     @Get("json")
     public List<CarbRepresentation> getCarb() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
         CarbRepository carbRepository = new CarbRepository(em);
         List<Carb> carbs = carbRepository.findAll();
@@ -33,7 +35,9 @@ public class CarbListResource extends ServerResource {
 
     @Post("json")
     public CarbRepresentation add(CarbRepresentation carbRepresentationIn) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         if (carbRepresentationIn == null) return null;
 
         Carb carb = carbRepresentationIn.createCarb();

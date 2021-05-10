@@ -7,7 +7,7 @@ import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import repository.GlucoseRepository;
 import representation.GlucoseRepresentation;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 
@@ -21,7 +21,9 @@ public class GlucoseResource extends ServerResource{
 
     @Get("json")
     public GlucoseRepresentation getGlucose() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_CHIEF_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em= JpaUtil.getEntityManager();
         GlucoseRepository glucoseRepository= new GlucoseRepository(em);
         Glucose glucose= glucoseRepository.read(id);

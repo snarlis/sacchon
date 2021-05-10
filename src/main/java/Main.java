@@ -5,10 +5,8 @@ import org.restlet.Restlet;
 import org.restlet.data.Protocol;
 import org.restlet.engine.Engine;
 import org.restlet.routing.Router;
-import org.restlet.security.ChallengeAuthenticator;
 import router.CustomRouter;
 import security.CorsFilter;
-import security.Shield;
 
 import javax.persistence.EntityManager;
 import java.util.logging.Logger;
@@ -34,17 +32,17 @@ public class Main extends Application {
 
     public Restlet createInboundRoot() {
         CustomRouter customRouter = new CustomRouter(this);
-        Shield shield = new Shield(this);
+        //Shield shield = new Shield(this);
 
 
         Router publicRouter = customRouter.publicResources();
 
         // Create the api router, protected by a patient guard
 
-        ChallengeAuthenticator guard = shield.createApiGuard();
-        Router userRouter = customRouter.protectedResources();
-        guard.setNext(userRouter);
-        publicRouter.attach(guard);
+        //ChallengeAuthenticator guard = shield.createApiGuard();
+        //Router userRouter = customRouter.protectedResources();
+        //guard.setNext(userRouter);
+        //publicRouter.attach(guard);
 
 
         CorsFilter corsFilter = new CorsFilter(this);

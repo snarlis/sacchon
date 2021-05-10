@@ -13,7 +13,7 @@ import repository.DoctorRepository;
 import repository.PatientRepository;
 import representation.ConsultationRepresentation;
 import resource.ResourceUtils;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -29,7 +29,9 @@ public class DoctorPatientConsultationListResource extends ServerResource {
 
     @Get("json")
     public List<ConsultationRepresentation> getConsultationList() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
 
         PatientRepository patientRepository = new PatientRepository(em);
@@ -46,7 +48,9 @@ public class DoctorPatientConsultationListResource extends ServerResource {
 
     @Post("json")
     public ConsultationRepresentation add(ConsultationRepresentation consultationRepresentationIn) throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         if (consultationRepresentationIn == null) return null;
 
         consultationRepresentationIn.setPatientId(this.patientId);

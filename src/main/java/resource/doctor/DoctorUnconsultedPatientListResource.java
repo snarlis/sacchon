@@ -8,7 +8,7 @@ import org.restlet.resource.ServerResource;
 import repository.DoctorRepository;
 import representation.PatientRepresentation;
 import resource.ResourceUtils;
-import security.Shield;
+import security.JWT;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -23,7 +23,9 @@ public class DoctorUnconsultedPatientListResource extends ServerResource {
 
     @Get("json")
     public List<PatientRepresentation> getPatientList() throws AuthorizationException {
-        ResourceUtils.checkRole(this, Shield.ROLE_DOCTOR);
+        ResourceUtils.checkRole(this, JWT.ROLE_DOCTOR);
+        ResourceUtils.checkIfTokenExpired(this);
+
         EntityManager em = JpaUtil.getEntityManager();
         DoctorRepository doctorRepository = new DoctorRepository(em);
         List<Patient> patientList = doctorRepository.getUnconsultedPatientList();
