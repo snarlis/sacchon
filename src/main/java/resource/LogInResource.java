@@ -5,11 +5,12 @@ import jpaUtil.JpaUtil;
 import model.ChiefDoctor;
 import model.Doctor;
 import model.Patient;
-import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import repository.ChiefDoctorRepository;
 import repository.DoctorRepository;
 import repository.PatientRepository;
+import representation.LoginRepresentation;
 import security.JWT;
 
 import javax.persistence.EntityManager;
@@ -19,10 +20,10 @@ import java.nio.charset.StandardCharsets;
 public class LogInResource extends ServerResource {
 
 
-    @Get
-    public String logIn()  {
-        String username = getQueryValue("username");
-        String password = getQueryValue("password");
+    @Post
+    public String logIn(LoginRepresentation loginRepresentation)  {
+        String username = loginRepresentation.getUsername();
+        String password = loginRepresentation.getPassword();
         String hashedPassword = Hashing.sha256()
                 .hashString(password, StandardCharsets.UTF_8)
                 .toString();
