@@ -12,6 +12,7 @@ import repository.DoctorRepository;
 import repository.PatientRepository;
 import representation.LoginRepresentation;
 import security.JWT;
+import util.Logger;
 
 import javax.persistence.EntityManager;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +32,7 @@ public class LogInResource extends ServerResource {
 
         Patient patient = isPatient(username, hashedPassword);
         if (patient != null) {
+            Logger.loginAudit(username,"Patient",true);
             String jwt = JWT.createJWT(String.valueOf(patient.getId()),"sacchon","patient" );
             returnValue = "{\n\"jwt\":\""+jwt+"\"}"; //could be done via a cleaner way
             resetFlag(patient);
@@ -38,14 +40,20 @@ public class LogInResource extends ServerResource {
 
         Doctor doctor = isDoctor(username, hashedPassword);
         if (doctor != null) {
+            Logger.loginAudit(username,"Doctor",true);
             String jwt = JWT.createJWT(String.valueOf(doctor.getId()),"sacchon","doctor" );
             returnValue = "{\n\"jwt\":\""+jwt+"\"}"; //could be done via a cleaner way
         }
 
         ChiefDoctor chiefDoctor = isChiefDoctor(username, hashedPassword);
         if (chiefDoctor != null) {
+            Logger.loginAudit(username,"Chief Doctor",true);
             String jwt = JWT.createJWT(String.valueOf(chiefDoctor.getId()),"sacchon","chiefDoctor" );
             returnValue = "{\n\"jwt\":\""+jwt+"\"}"; //could be done via a cleaner way
+        }
+
+        if(chiefDoctor == null && doctor == null && patient == null){
+            Logger.loginAudit(username,"",false);
         }
 
         return returnValue;
