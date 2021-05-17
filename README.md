@@ -10,6 +10,12 @@ The project aim is to develop the Sacchon app and deliver it ready to be
 released. The requirements are given by the Sacchon Consulting Enterprise 
 (a fictional company).  
 
+Presentation and AWS endpoint
+-----------
+Presentation -> https://github.com/snarlis/sacchon/raw/master/Sacchon-Presentation.pdf
+
+AWS Load balancer endpoint -> http://sappchon-96be2bc1b54320a0.elb.eu-central-1.amazonaws.com:9000/v1/ping
+
 Register
 -----------
 Request: POST examplehost.com:9000/v1/
